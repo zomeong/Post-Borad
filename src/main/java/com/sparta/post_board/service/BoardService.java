@@ -39,26 +39,25 @@ public class BoardService {
     @Transactional
     public Feed updateFeed(Long id, FeedRequestDto requestDto) {
         // 선택 피드 수정
-        Feed feed = getFeed(id);
-        if(checkPassword(feed.getPassword(), requestDto.getPassword())){      // 비밀번호 확인
-            feed.update(requestDto);    // 일치하면 수정
-        }
+        Feed feed = checkPassword(id, requestDto.getPassword());
+        feed.update(requestDto);
         return feed;
     }
 
     @Transactional
     public Long deleteFeed(Long id, FeedRequestDto requestDto) {
         // 선택 포스트 삭제
-        Feed feed = getFeed(id);
-        if(checkPassword(feed.getPassword(), requestDto.getPassword())){
-            boardRepository.delete(feed);
-        }
+        Feed feed = checkPassword(id, requestDto.getPassword());
+        boardRepository.delete(feed);
         return id;
     }
 
-    private boolean checkPassword(String postPassword, String getPassword){
+    private Feed checkPassword(Long id, String getPassword) {
         // 비밀번호 확인
-        if(getPassword.equals(postPassword)) return true;
-        else throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        Feed feed = getFeed(id);
+        if (!getPassword.equals(feed.getPassword())){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        return feed;
     }
 }

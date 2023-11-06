@@ -4,6 +4,7 @@ import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.service.BoardService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
