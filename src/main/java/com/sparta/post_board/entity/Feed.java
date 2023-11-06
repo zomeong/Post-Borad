@@ -30,6 +30,7 @@ public class Feed extends Timestamped {
     }
 
     public void update(FeedRequestDto requestDto) {
+        // 작성자명, 제목, 내용만 수정 가능
         this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();

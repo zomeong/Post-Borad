@@ -7,6 +7,6 @@ import java.util.List;
 
 
 public interface BoardRepository extends JpaRepository<Feed, Long> {
-    List<Feed> findAllByOrderByModifiedAtDesc();
+    List<Feed> findAllByOrderByModifiedAtDesc();    // 작성일 기준 내림차순 정렬
 
 }

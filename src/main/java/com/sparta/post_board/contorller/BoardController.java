@@ -32,12 +32,12 @@ public class BoardController {
     public Feed getFeed(@PathVariable Long id){
         return boardService.getFeed(id);
     }
-//
-//    @PutMapping("/feeds/{id}")
-//    public Long updateFeed(@PathVariable Long id, @RequestBody FeedRequestDto requestDto){
-//        return boardService.updateFeed(id, requestDto);
-//    }
-//
+
+    @PutMapping("/feeds/{id}")
+    public Feed updateFeed(@PathVariable Long id,@RequestBody FeedRequestDto requestDto){
+        return boardService.updateFeed(id, requestDto);
+    }
+
 //    @DeleteMapping("/feed/{id}")
 //    public Long deleteFeed(@PathVariable Long id){
 //        return boardService.deleteFeed(id);
