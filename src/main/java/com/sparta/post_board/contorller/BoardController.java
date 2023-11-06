@@ -22,10 +22,10 @@ public class BoardController {
         return boardService.createFeed(requestDto);
     }
 
-//    @GetMapping("/feeds")
-//    public List<FeedResponseDto> getAllFeeds(){
-//        return boardService.getAllFeeds();
-//    }
+    @GetMapping("/feeds")
+    public List<FeedResponseDto> getAllFeeds(){
+        return boardService.getAllFeeds();
+    }
 //
 //    @GetMapping("/feeds/{id}")
 //    public Long getFeed(@PathVariable Long id){

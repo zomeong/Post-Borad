@@ -6,6 +6,8 @@ import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.repository.BoardRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
@@ -19,4 +21,8 @@ public class BoardService {
         return new FeedResponseDto(feed);
     }
 
+    public List<FeedResponseDto> getAllFeeds() {
+        return boardRepository.findAllByOrderByModifiedAtDesc()
+                .stream().map(FeedResponseDto::new).toList();
+    }
 }
