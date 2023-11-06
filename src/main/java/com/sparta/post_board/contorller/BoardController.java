@@ -38,8 +38,8 @@ public class BoardController {
         return boardService.updateFeed(id, requestDto);
     }
 
-//    @DeleteMapping("/feed/{id}")
-//    public Long deleteFeed(@PathVariable Long id){
-//        return boardService.deleteFeed(id);
-//    }
+    @DeleteMapping("/feeds/{id}")
+    public Long deleteFeed(@PathVariable Long id, @RequestBody FeedRequestDto requestDto){
+        return boardService.deleteFeed(id, requestDto);
+    }
 }

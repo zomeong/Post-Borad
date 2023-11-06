@@ -46,6 +46,16 @@ public class BoardService {
         return feed;
     }
 
+    @Transactional
+    public Long deleteFeed(Long id, FeedRequestDto requestDto) {
+        // 선택 포스트 삭제
+        Feed feed = getFeed(id);
+        if(checkPassword(feed.getPassword(), requestDto.getPassword())){
+            boardRepository.delete(feed);
+        }
+        return id;
+    }
+
     private boolean checkPassword(String postPassword, String getPassword){
         // 비밀번호 확인
         if(getPassword.equals(postPassword)) return true;
