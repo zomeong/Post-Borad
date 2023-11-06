@@ -3,13 +3,13 @@ package com.sparta.post_board.entity;
 import com.sparta.post_board.dto.FeedRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "feed")
-public class Feed {
+@NoArgsConstructor
+public class Feed extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -15,9 +15,8 @@ public class BoardService {
     }
 
     public FeedResponseDto createFeed(FeedRequestDto requestDto) {
-        Feed feed = new Feed(requestDto);
-        Feed saveFeed = boardRepository.save(feed);
-        return new FeedResponseDto(saveFeed);
+        Feed feed = boardRepository.save(new Feed(requestDto));
+        return new FeedResponseDto(feed);
     }
 
 }
