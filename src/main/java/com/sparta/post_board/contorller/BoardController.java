@@ -2,6 +2,7 @@ package com.sparta.post_board.contorller;
 
 import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
+import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.service.BoardService;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,11 +27,11 @@ public class BoardController {
     public List<FeedResponseDto> getAllFeeds(){
         return boardService.getAllFeeds();
     }
-//
-//    @GetMapping("/feeds/{id}")
-//    public Long getFeed(@PathVariable Long id){
-//        return boardService.getFeed();
-//    }
+
+    @GetMapping("/feeds/{id}")
+    public Feed getFeed(@PathVariable Long id){
+        return boardService.getFeed(id);
+    }
 //
 //    @PutMapping("/feeds/{id}")
 //    public Long updateFeed(@PathVariable Long id, @RequestBody FeedRequestDto requestDto){

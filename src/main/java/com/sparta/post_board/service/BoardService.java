@@ -25,4 +25,14 @@ public class BoardService {
         return boardRepository.findAllByOrderByModifiedAtDesc()
                 .stream().map(FeedResponseDto::new).toList();
     }
+
+    public Feed getFeed(Long id) {
+        return findFeed(id);
+    }
+
+    private Feed findFeed(Long id){
+        return boardRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("선택한 피드는 존재하지 않습니다.")
+        );
+    }
 }
