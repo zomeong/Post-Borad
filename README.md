@@ -4,13 +4,13 @@
 spring boot로 기본 CRUD를 구현한 익명 게시판 서버 만들기
 
 ## :memo: 설계
-- Usecase Diagram
+- Usecase Diagram<br>
 ![image](https://github.com/zomeong/Post-Borad/assets/123639754/c727aeb3-9c2b-47ed-81e8-c5f4ce57b99a)
 
 - API 명세서
 <br>[postman API 명세서](http://documenter.getpostman.com/view/30860889/2s9YXfbNqs)<br>
 
-- ERD
+- ERD<br>
 ![ERD](https://github.com/zomeong/Post-Borad/assets/123639754/37582cb2-116b-4a67-b608-b54af2fd31c1)
 
 ## :computer: 개발 환경
