@@ -27,7 +27,7 @@ public class UserController {
 
     // 회원가입 페이지가 없어 get mapping은 구현하지 않음
     @PostMapping("/user/signup")
-    public String signup(@RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
+    public String signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         // bindingResult에 에러가 담김
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
