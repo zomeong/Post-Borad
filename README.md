@@ -4,9 +4,9 @@
 spring boot로 기본 CRUD를 구현한 익명 게시판 서버 만들기
 
 ## :memo: 설계
-[Usecase Diagram]()<br>
+- Usecase Diagram<br>
 [API 명세서](http://documenter.getpostman.com/view/30860889/2s9YXfbNqs)<br>
-[ERD]()
+- ERD
 
 ## :computer: 개발 환경
 - JDK 17

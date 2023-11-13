@@ -13,13 +13,13 @@ public class Feed extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
-    @Column(name = "username", nullable = false)
+    @Column(nullable = false)
     private String username;
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
-    @Column(name = "contents", nullable = false)
+    @Column(nullable = false)
     private String contents;
 
     public Feed(FeedRequestDto requestDto) {
