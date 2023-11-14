@@ -1,7 +1,8 @@
 package com.sparta.post_board.service;
 
-import com.sparta.post_board.dto.SignupRequestDto;
+import com.sparta.post_board.dto.UserRequestDto;
 import com.sparta.post_board.entity.User;
+import com.sparta.post_board.entity.UserRoleEnum;
 import com.sparta.post_board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +17,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void signup(SignupRequestDto requestDto) {
+    public void signup(UserRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -27,7 +28,8 @@ public class UserService {
         }
 
         // 사용자 등록
-        User user = new User(username, password);
+        UserRoleEnum role = UserRoleEnum.USER;
+        User user = new User(username, password, role);
         userRepository.save(user);
     }
 }
