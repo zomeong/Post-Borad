@@ -17,7 +17,6 @@ public class FeedResponseDto {
     public FeedResponseDto(Feed feed) {
         this.id = feed.getId();
         this.title = feed.getTitle();
-        this.username = feed.getUsername();
         this.contents = feed.getContents();
         this.createdAt = feed.getCreatedAt();
         this.modifiedAt = feed.getModifiedAt();

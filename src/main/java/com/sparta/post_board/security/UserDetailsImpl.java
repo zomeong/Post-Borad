@@ -2,6 +2,9 @@ package com.sparta.post_board.security;
 
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,17 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Getter
+@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;
-
-    public UserDetailsImpl(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
-    }
 
     @Override
     public String getPassword() {

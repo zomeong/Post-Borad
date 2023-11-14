@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "feed")
@@ -13,25 +16,31 @@ public class Feed extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
-    private String username;
+
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private String contents;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "feed")
+    private List<Comment> commentList = new ArrayList<>();
+
     public Feed(FeedRequestDto requestDto) {
         this.password = requestDto.getPassword();
-        this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
 
     public void update(FeedRequestDto requestDto) {
-        // 작성자명, 제목, 내용만 수정 가능
-        this.username = requestDto.getUsername();
+        // 제목, 내용만 수정 가능
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
