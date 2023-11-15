@@ -26,6 +26,7 @@ public class Feed extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

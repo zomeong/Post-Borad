@@ -40,10 +40,4 @@ public class UserController {
 
         return ResponseEntity.ok("회원가입 성공");
     }
-
-    @GetMapping("/user/login-page")
-    @ResponseBody
-    public String loginPage() {
-        return "login page";
-    }
 }
