@@ -5,6 +5,7 @@ import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.security.UserDetailsImpl;
 import com.sparta.post_board.service.FeedService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +30,8 @@ public class FeedController {
     }
 
     @GetMapping("/feeds/{id}")
-    public FeedResponseDto getFeed(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return feedService.getFeed(id, userDetails.getUser());
+    public FeedResponseDto getFeed(@PathVariable Long id) {
+        return feedService.getFeed(id);
     }
 
     @PutMapping("/feeds/{id}")
@@ -39,8 +40,9 @@ public class FeedController {
         return feedService.updateFeed(id, requestDto, userDetails.getUser());
     }
 
-//    @DeleteMapping("/feeds/{id}")
-//    public Long deleteFeed(@PathVariable Long id, @RequestBody FeedRequestDto requestDto){
-//        return feedService.deleteFeed(id, requestDto);
-//    }
+    @PutMapping("/feeds/{id}/complete")
+    public ResponseEntity<String> completeFeed(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        feedService.completeFeed(id, userDetails.getUser());
+        return ResponseEntity.ok("할일 완료!");
+    }
 }

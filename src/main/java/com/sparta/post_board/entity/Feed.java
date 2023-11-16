@@ -45,4 +45,8 @@ public class Feed extends Timestamped {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
+
+    public void complete(){
+        this.complete = true;
+    }
 }

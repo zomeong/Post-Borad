@@ -9,6 +9,5 @@ import java.util.Optional;
 
 
 public interface FeedRepository extends JpaRepository<Feed, Long> {
-    Optional<Feed> findByIdAndUserId(Long id, Long userId);
     List<Feed> findAllByUserOrderByCreatedAtDesc(User user);
 }

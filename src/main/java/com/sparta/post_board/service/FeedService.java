@@ -45,38 +45,40 @@ public class FeedService {
         return allFeedsList;
     }
 
-    public FeedResponseDto getFeed(Long feedId, User user){
+    public FeedResponseDto getFeed(Long id){
         // 선택 피드 조회
-        Feed feed = feedRepository.findByIdAndUserId(feedId, user.getId()).orElseThrow(() ->
-                new IllegalArgumentException("선택한 피드는 존재하지 않습니다.")
-        );
-
+        Feed feed = findFeed(id);
         return new FeedResponseDto(feed);
     }
 
     @Transactional
     public FeedResponseDto updateFeed(Long id, FeedRequestDto requestDto, User user) {
         // 선택 피드 수정
-        Feed feed = feedRepository.findById(id).orElseThrow(() ->
-                new NullPointerException("해당 피드는 존재하지 않습니다.")
-        );
+        Feed feed = findFeed(id);
+
+        if(!feed.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("본인이 작성한 피드만 수정 가능합니다.");
+        }
+
         feed.update(requestDto);
         return new FeedResponseDto(feed);
     }
 
-//    @Transactional
-//    public Feed updateFeed(Long id, FeedRequestDto requestDto) {
-//        // 선택 피드 수정
-////        Feed feed = checkPassword(id, requestDto.getPassword());
-////        feed.update(requestDto);
-// //       return feed;
-//    }
-//
-//    @Transactional
-//    public Long deleteFeed(Long id, FeedRequestDto requestDto) {
-//        // 선택 포스트 삭제
-//  //      Feed feed = checkPassword(id, requestDto.getPassword());
-// //       feedRepository.delete(feed);
-//        return id;
-//    }
+    @Transactional
+    public void completeFeed(Long id, User user) {
+        // 선택한 피드 완료 처리
+        Feed feed = findFeed(id);
+
+        if(!feed.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("본인이 작성한 피드만 완료 가능합니다.");
+        }
+
+        feed.complete();
+    }
+
+    private Feed findFeed(Long id){
+        return feedRepository.findById(id).orElseThrow(() ->
+                new NullPointerException("해당 피드는 존재하지 않습니다.")
+        );
+    }
 }
