@@ -1,5 +1,6 @@
 package com.sparta.post_board.entity;
 
+import com.sparta.post_board.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +20,13 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "feed_id")
     private Feed feed;
+
+    public Comment(CommentRequestDto requestDto, Feed feed){
+        this.contents = requestDto.getContents();
+        this.feed = feed;
+    }
+
+    public void update(CommentRequestDto requestDto) {
+        this.contents = requestDto.getContents();
+    }
 }
