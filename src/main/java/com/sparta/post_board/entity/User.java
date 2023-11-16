@@ -31,6 +31,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Feed> feedList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Feed> commentList = new ArrayList<>();
+
     public User(String username, String password,  UserRoleEnum role){
         this.username = username;
         this.password = password;

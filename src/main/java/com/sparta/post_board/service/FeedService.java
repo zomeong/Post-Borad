@@ -55,11 +55,7 @@ public class FeedService {
     public FeedResponseDto updateFeed(Long id, FeedRequestDto requestDto, User user) {
         // 선택 피드 수정
         Feed feed = findFeed(id);
-
-        if(!feed.getUser().getId().equals(user.getId())){
-            throw new IllegalArgumentException("본인이 작성한 피드만 수정 가능합니다.");
-        }
-
+        checkUser(feed, user);
         feed.update(requestDto);
         return new FeedResponseDto(feed);
     }
@@ -68,11 +64,7 @@ public class FeedService {
     public void completeFeed(Long id, User user) {
         // 선택한 피드 완료 처리
         Feed feed = findFeed(id);
-
-        if(!feed.getUser().getId().equals(user.getId())){
-            throw new IllegalArgumentException("본인이 작성한 피드만 완료 가능합니다.");
-        }
-
+        checkUser(feed, user);
         feed.complete();
     }
 
@@ -80,5 +72,11 @@ public class FeedService {
         return feedRepository.findById(id).orElseThrow(() ->
                 new NullPointerException("해당 피드는 존재하지 않습니다.")
         );
+    }
+
+    private void checkUser(Feed feed, User user){
+        if(!feed.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("작성자만 수정/삭제 가능합니다.");
+        }
     }
 }

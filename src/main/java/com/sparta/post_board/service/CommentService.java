@@ -4,6 +4,7 @@ import com.sparta.post_board.dto.CommentRequestDto;
 import com.sparta.post_board.dto.CommentResponseDto;
 import com.sparta.post_board.entity.Comment;
 import com.sparta.post_board.entity.Feed;
+import com.sparta.post_board.entity.User;
 import com.sparta.post_board.repository.CommentRepository;
 import com.sparta.post_board.repository.FeedRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,23 +19,25 @@ public class CommentService {
     private final FeedRepository feedRepository;
 
 
-    public CommentResponseDto createComment(Long id, CommentRequestDto requestDto) {
+    public CommentResponseDto createComment(Long id, CommentRequestDto requestDto, User user) {
         Feed feed = feedRepository.findById(id).orElseThrow(()
                 -> new IllegalArgumentException("선택한 피드가 존재하지 않습니다.")
         );
-        Comment comment = commentRepository.save(new Comment(requestDto, feed));
+        Comment comment = commentRepository.save(new Comment(requestDto, feed, user));
         return new CommentResponseDto(comment);
     }
 
     @Transactional
-    public CommentResponseDto updateComment(Long feedId, Long commentId, CommentRequestDto requestDto) {
+    public CommentResponseDto updateComment(Long feedId, Long commentId, CommentRequestDto requestDto, User user) {
         Comment comment = findComment(commentId, feedId);
+        checkUser(comment, user);
         comment.update(requestDto);
         return new CommentResponseDto(comment);
     }
 
-    public void deleteComment(Long feedId, Long commentId, CommentRequestDto requestDto) {
+    public void deleteComment(Long feedId, Long commentId, User user) {
         Comment comment = findComment(commentId, feedId);
+        checkUser(comment, user);
         commentRepository.delete(comment);
     }
 
@@ -42,5 +45,11 @@ public class CommentService {
         return commentRepository.findByIdAndFeedId(commentId, feedId).orElseThrow(()
                 -> new IllegalArgumentException("선택한 댓글이 존재하지 않습니다.")
         );
+    }
+
+    private void checkUser(Comment comment, User user){
+        if(!comment.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("작성자만 수정/삭제 가능합니다.");
+        }
     }
 }

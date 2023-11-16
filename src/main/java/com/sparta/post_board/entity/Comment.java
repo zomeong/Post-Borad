@@ -21,9 +21,14 @@ public class Comment {
     @JoinColumn(name = "feed_id")
     private Feed feed;
 
-    public Comment(CommentRequestDto requestDto, Feed feed){
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Comment(CommentRequestDto requestDto, Feed feed, User user){
         this.contents = requestDto.getContents();
         this.feed = feed;
+        this.user = user;
     }
 
     public void update(CommentRequestDto requestDto) {
