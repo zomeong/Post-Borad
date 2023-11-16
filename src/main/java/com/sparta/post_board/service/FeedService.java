@@ -28,11 +28,13 @@ public class FeedService {
 //                .stream().map(FeedResponseDto::new).toList();
 //    }
 
-    public Feed getFeed(Long id){
+    public FeedResponseDto getFeed(Long feedId, User user){
         // 선택 피드 조회
-        return feedRepository.findById(id).orElseThrow(() ->
+        Feed feed = feedRepository.findByIdAndUserId(feedId, user.getId()).orElseThrow(() ->
                 new IllegalArgumentException("선택한 피드는 존재하지 않습니다.")
         );
+
+        return new FeedResponseDto(feed, user);
     }
 
 //    @Transactional

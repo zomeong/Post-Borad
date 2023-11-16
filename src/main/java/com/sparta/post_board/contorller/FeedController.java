@@ -19,19 +19,19 @@ public class FeedController {
     private final FeedService feedService;
 
     @PostMapping("/feeds")
-    public FeedResponseDto createFeed(@RequestBody FeedRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public FeedResponseDto createFeed(@RequestBody FeedRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return feedService.createFeed(requestDto, userDetails.getUser());
     }
 
-//    @GetMapping("/feeds")
+    //    @GetMapping("/feeds")
 //    public List<FeedResponseDto> getAllFeeds(){
 //        return feedService.getAllFeeds();
 //    }
 //
-//    @GetMapping("/feeds/{id}")
-//    public Feed getFeed(@PathVariable Long id){
-//        return feedService.getFeed(id);
-//    }
+    @GetMapping("/feeds/{feedId}")
+    public FeedResponseDto getFeed(@PathVariable Long feedId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return feedService.getFeed(feedId, userDetails.getUser());
+    }
 //
 //    @PutMapping("/feeds/{id}")
 //    public Feed updateFeed(@PathVariable Long id,@RequestBody FeedRequestDto requestDto){
