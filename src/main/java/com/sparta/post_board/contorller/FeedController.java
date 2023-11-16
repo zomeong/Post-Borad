@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @RestController
@@ -23,11 +24,11 @@ public class FeedController {
         return feedService.createFeed(requestDto, userDetails.getUser());
     }
 
-    //    @GetMapping("/feeds")
-//    public List<FeedResponseDto> getAllFeeds(){
-//        return feedService.getAllFeeds();
-//    }
-//
+    @GetMapping("/feeds")
+    public LinkedHashMap<String, List<FeedResponseDto>> getAllFeeds() {
+        return feedService.getAllFeeds();
+    }
+
     @GetMapping("/feeds/{feedId}")
     public FeedResponseDto getFeed(@PathVariable Long feedId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return feedService.getFeed(feedId, userDetails.getUser());

@@ -29,6 +29,7 @@ public class User {
     private UserRoleEnum role;
 
     @OneToMany(mappedBy = "user")
+    @OrderBy("createdAt DESC")
     private List<Feed> feedList = new ArrayList<>();
 
     public User(String username, String password,  UserRoleEnum role){
