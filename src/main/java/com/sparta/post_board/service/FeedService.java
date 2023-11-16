@@ -24,7 +24,7 @@ public class FeedService {
     public FeedResponseDto createFeed(FeedRequestDto requestDto, User user) {
         // 새 피드 저장
         Feed feed = feedRepository.save(new Feed(requestDto, user));
-        return new FeedResponseDto(feed, user);
+        return new FeedResponseDto(feed);
     }
 
     public LinkedHashMap<String, List<FeedResponseDto>> getAllFeeds() {
@@ -35,8 +35,8 @@ public class FeedService {
 
         for (User user : userList) {
             // user의 feedlist 찾아오기
-            feedList = (List<FeedResponseDto>) feedRepository.findAllByUser(user).stream()
-                    .map((Feed feed) -> new FeedResponseDto(feed, user)).toList();
+            feedList = (List<FeedResponseDto>) feedRepository.findAllByUserOrderByCreatedAtDesc(user)
+                    .stream().map(FeedResponseDto::new).toList();
 
             // username을 key, feedList를 value로 map에 저장
             allFeedsList.put(user.getUsername(), feedList);
@@ -51,7 +51,17 @@ public class FeedService {
                 new IllegalArgumentException("선택한 피드는 존재하지 않습니다.")
         );
 
-        return new FeedResponseDto(feed, user);
+        return new FeedResponseDto(feed);
+    }
+
+    @Transactional
+    public FeedResponseDto updateFeed(Long id, FeedRequestDto requestDto, User user) {
+        // 선택 피드 수정
+        Feed feed = feedRepository.findById(id).orElseThrow(() ->
+                new NullPointerException("해당 피드는 존재하지 않습니다.")
+        );
+        feed.update(requestDto);
+        return new FeedResponseDto(feed);
     }
 
 //    @Transactional
