@@ -4,6 +4,7 @@ import com.sparta.post_board.dto.FeedRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +19,13 @@ public class Feed extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String contents;
 
+    @ColumnDefault("false")
+    private boolean complete;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -34,10 +34,10 @@ public class Feed extends Timestamped {
     @OneToMany(mappedBy = "feed")
     private List<Comment> commentList = new ArrayList<>();
 
-    public Feed(FeedRequestDto requestDto) {
-        this.password = requestDto.getPassword();
+    public Feed(FeedRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+        this.user = user;
     }
 
     public void update(FeedRequestDto requestDto) {

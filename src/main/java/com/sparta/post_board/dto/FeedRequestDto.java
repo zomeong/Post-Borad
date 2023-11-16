@@ -4,8 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class FeedRequestDto {
-    private String password;
-    private String username;
     private String title;
     private String contents;
 }
