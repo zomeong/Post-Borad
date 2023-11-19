@@ -22,7 +22,6 @@ public class UserController {
 
     private final UserService userService;
 
-    // 회원가입 페이지가 없어 get mapping은 구현하지 않음
     @PostMapping("/user/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody UserRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
