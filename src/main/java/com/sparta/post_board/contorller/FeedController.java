@@ -29,6 +29,11 @@ public class FeedController {
         return feedService.getAllFeeds(userDetails.getUser());
     }
 
+    @GetMapping("/feeds/search")
+    public List<FeedResponseDto> searchFeed(@RequestParam String keyword){
+        return feedService.searchFeed(keyword);
+    }
+
     @GetMapping("/feeds/{id}")
     public FeedResponseDto getFeed(@PathVariable Long id) {
         return feedService.getFeed(id);

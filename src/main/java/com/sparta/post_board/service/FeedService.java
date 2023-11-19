@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,11 +29,11 @@ public class FeedService {
 
     public LinkedHashMap<String, List<FeedResponseDto>> getAllFeeds(User loginUser) {
         List<User> userList = userRepository.findAll().stream().toList();
-        List<FeedResponseDto> feedList = new ArrayList<>();
+        List<FeedResponseDto> feedList;
         LinkedHashMap<String, List<FeedResponseDto>> allFeedsList = new LinkedHashMap<>();
 
         for (User user : userList) {
-            feedList = (List<FeedResponseDto>) feedRepository.findAllByUserAndCompleteOrderByCreatedAtDesc(user, false)
+            feedList = feedRepository.findAllByUserAndCompleteOrderByCreatedAtDesc(user, false)
                     .stream()
                     .filter(feed -> !feed.isBlind() || user.getId().equals(loginUser.getId()))
                     .map(FeedResponseDto::new).toList();
@@ -41,7 +42,19 @@ public class FeedService {
         return allFeedsList;
     }
 
-    public FeedResponseDto getFeed(Long id){
+    public List<FeedResponseDto> searchFeed(String keyword) {
+        List<FeedResponseDto> feedList = feedRepository.findByTitleOrderByCreatedAtDesc(keyword)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(FeedResponseDto::new).toList();
+
+        if(feedList.isEmpty()){
+            throw new IllegalArgumentException("검색 결과가 없습니다.");
+        }
+        return feedList;
+    }
+
+    public FeedResponseDto getFeed(Long id) {
         Feed feed = findFeed(id);
         return new FeedResponseDto(feed);
     }
@@ -68,14 +81,14 @@ public class FeedService {
         feed.blind();
     }
 
-    private Feed findFeed(Long id){
+    private Feed findFeed(Long id) {
         return feedRepository.findById(id).orElseThrow(() ->
                 new NullPointerException("해당 피드는 존재하지 않습니다.")
         );
     }
 
-    private void checkUser(Feed feed, User user){
-        if(!feed.getUser().getId().equals(user.getId())){
+    private void checkUser(Feed feed, User user) {
+        if (!feed.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("작성자만 수정/삭제 가능합니다.");
         }
     }
