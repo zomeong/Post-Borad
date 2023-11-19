@@ -27,6 +27,9 @@ public class Feed extends Timestamped {
     @ColumnDefault("false")
     private boolean complete;
 
+    @ColumnDefault("false")
+    private boolean blind;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -41,12 +44,15 @@ public class Feed extends Timestamped {
     }
 
     public void update(FeedRequestDto requestDto) {
-        // 제목, 내용만 수정 가능
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
 
     public void complete(){
         this.complete = true;
+    }
+
+    public void blind() {
+        this.blind = true;
     }
 }

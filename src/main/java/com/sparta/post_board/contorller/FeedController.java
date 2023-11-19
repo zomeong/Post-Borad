@@ -25,8 +25,8 @@ public class FeedController {
     }
 
     @GetMapping("/feeds")
-    public LinkedHashMap<String, List<FeedResponseDto>> getAllFeeds() {
-        return feedService.getAllFeeds();
+    public LinkedHashMap<String, List<FeedResponseDto>> getAllFeeds(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return feedService.getAllFeeds(userDetails.getUser());
     }
 
     @GetMapping("/feeds/{id}")
@@ -44,5 +44,11 @@ public class FeedController {
     public ResponseEntity<String> completeFeed(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         feedService.completeFeed(id, userDetails.getUser());
         return ResponseEntity.ok("할일 완료!");
+    }
+
+    @PutMapping("/feeds/{id}/blind")
+    public ResponseEntity<String> blindFeed(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        feedService.blindFeed(id, userDetails.getUser());
+        return ResponseEntity.ok("할일이 비공개 처리 되었습니다.");
     }
 }

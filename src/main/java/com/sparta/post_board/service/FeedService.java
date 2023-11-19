@@ -26,14 +26,16 @@ public class FeedService {
         return new FeedResponseDto(feed);
     }
 
-    public LinkedHashMap<String, List<FeedResponseDto>> getAllFeeds() {
+    public LinkedHashMap<String, List<FeedResponseDto>> getAllFeeds(User loginUser) {
         List<User> userList = userRepository.findAll().stream().toList();
         List<FeedResponseDto> feedList = new ArrayList<>();
         LinkedHashMap<String, List<FeedResponseDto>> allFeedsList = new LinkedHashMap<>();
 
         for (User user : userList) {
             feedList = (List<FeedResponseDto>) feedRepository.findAllByUserAndCompleteOrderByCreatedAtDesc(user, false)
-                    .stream().map(FeedResponseDto::new).toList();
+                    .stream()
+                    .filter(feed -> !feed.isBlind() || user.getId().equals(loginUser.getId()))
+                    .map(FeedResponseDto::new).toList();
             allFeedsList.put(user.getUsername(), feedList);
         }
         return allFeedsList;
@@ -57,6 +59,13 @@ public class FeedService {
         Feed feed = findFeed(id);
         checkUser(feed, user);
         feed.complete();
+    }
+
+    @Transactional
+    public void blindFeed(Long id, User user) {
+        Feed feed = findFeed(id);
+        checkUser(feed, user);
+        feed.blind();
     }
 
     private Feed findFeed(Long id){
