@@ -22,38 +22,30 @@ public class FeedService {
     private final UserRepository userRepository;
 
     public FeedResponseDto createFeed(FeedRequestDto requestDto, User user) {
-        // 새 피드 저장
         Feed feed = feedRepository.save(new Feed(requestDto, user));
         return new FeedResponseDto(feed);
     }
 
     public LinkedHashMap<String, List<FeedResponseDto>> getAllFeeds() {
-        // 모든 피드 목록 조회
-        List<User> userList = userRepository.findAll().stream().toList();   // user 리스트 조회
+        List<User> userList = userRepository.findAll().stream().toList();
         List<FeedResponseDto> feedList = new ArrayList<>();
         LinkedHashMap<String, List<FeedResponseDto>> allFeedsList = new LinkedHashMap<>();
 
         for (User user : userList) {
-            // user의 feedlist 찾아오기
-            feedList = (List<FeedResponseDto>) feedRepository.findAllByUserOrderByCreatedAtDesc(user)
+            feedList = (List<FeedResponseDto>) feedRepository.findAllByUserAndCompleteOrderByCreatedAtDesc(user, false)
                     .stream().map(FeedResponseDto::new).toList();
-
-            // username을 key, feedList를 value로 map에 저장
             allFeedsList.put(user.getUsername(), feedList);
         }
-
         return allFeedsList;
     }
 
     public FeedResponseDto getFeed(Long id){
-        // 선택 피드 조회
         Feed feed = findFeed(id);
         return new FeedResponseDto(feed);
     }
 
     @Transactional
     public FeedResponseDto updateFeed(Long id, FeedRequestDto requestDto, User user) {
-        // 선택 피드 수정
         Feed feed = findFeed(id);
         checkUser(feed, user);
         feed.update(requestDto);
@@ -62,7 +54,6 @@ public class FeedService {
 
     @Transactional
     public void completeFeed(Long id, User user) {
-        // 선택한 피드 완료 처리
         Feed feed = findFeed(id);
         checkUser(feed, user);
         feed.complete();
