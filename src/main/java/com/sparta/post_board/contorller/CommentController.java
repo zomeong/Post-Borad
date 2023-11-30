@@ -10,26 +10,26 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/board/feeds")
+@RequestMapping("/feeds/{feedId}")
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/{feedId}/comments")
+    @PostMapping("/comments")
     public CommentResponseDto createComment(@PathVariable Long feedId, @RequestBody CommentRequestDto requestDto,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
         return commentService.createComment(feedId, requestDto, userDetails.getUser());
     }
 
-    @PutMapping(("/{feedId}/{commentId}"))
+    @PutMapping(("/comments/{commentId}"))
     public CommentResponseDto updateComment(@PathVariable Long feedId, @PathVariable Long commentId,
                                             @RequestBody CommentRequestDto requestDto,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
         return commentService.updateComment(feedId, commentId, requestDto, userDetails.getUser());
     }
 
-    @DeleteMapping("/{feedId}/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable Long feedId, @PathVariable Long commentId,
                                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
         commentService.deleteComment(feedId, commentId, userDetails.getUser());

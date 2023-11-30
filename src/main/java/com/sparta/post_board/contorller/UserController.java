@@ -16,7 +16,6 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/board")
 @AllArgsConstructor
 public class UserController {
 
