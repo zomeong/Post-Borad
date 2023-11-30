@@ -1,6 +1,7 @@
 package com.sparta.post_board.service;
 
 import com.sparta.post_board.dto.FeedRequestDto;
+import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.repository.FeedRepository;
@@ -51,11 +52,11 @@ public class FeedServiceTest {
         when(feedRepository.findById(feedId)).thenReturn(Optional.of(feed));
 
         // When
-        feedService.updateFeed(feedId, updateDto, user);
+        FeedResponseDto responseDto = feedService.updateFeed(feedId, updateDto, user);
 
         // Then
-        assertEquals("제목 수정", feed.getTitle());
-        assertEquals("내용 수정", feed.getContents());
+        assertEquals("제목 수정", responseDto.getTitle());
+        assertEquals("내용 수정", responseDto.getContents());
     }
 
     @Test
