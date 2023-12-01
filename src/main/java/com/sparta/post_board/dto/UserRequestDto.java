@@ -3,11 +3,13 @@ package com.sparta.post_board.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class UserRequestDto {
     @NotBlank(message = "사용자 이름은 필수값 입니다.")
     @Pattern(regexp = "^[a-z0-9]+$")
