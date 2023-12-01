@@ -5,11 +5,13 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserRequestDto {
     @NotBlank(message = "사용자 이름은 필수값 입니다.")
     @Pattern(regexp = "^[a-z0-9]+$")
