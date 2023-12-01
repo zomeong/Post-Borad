@@ -56,11 +56,7 @@ public class CommentServiceTest {
         CommentService commentService = new CommentService(commentRepository, feedRepository);
 
         when(feedRepository.findById(1L)).thenReturn(Optional.of(feed));
-        when(commentRepository.save(any(Comment.class))).thenAnswer(invocation -> {
-            Comment savedComment = invocation.getArgument(0);
-            savedComment.setContents("댓글");
-            return savedComment;
-        });
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 
         // When
         CommentResponseDto responseDto = commentService.createComment(1L, CommentDto, user);
