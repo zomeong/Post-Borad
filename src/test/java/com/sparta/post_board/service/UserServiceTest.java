@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -34,8 +35,8 @@ public class UserServiceTest {
     UserService userService;
 
     @Test
-    @DisplayName("회원가입")
-    void signupTest(){
+    @DisplayName("회원가입 성공")
+    void signupTest1() {
         // given
         UserRequestDto requestDto = new UserRequestDto("test user", "password");
 
@@ -53,5 +54,25 @@ public class UserServiceTest {
         assertEquals("test user", capturedUser.getUsername());
         assertEquals("encodedPassword", capturedUser.getPassword());
         assertEquals(UserRoleEnum.USER, capturedUser.getRole());
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 - 중복된 유저")
+    void signupTest2() {
+        // given
+        UserRequestDto requestDto = new UserRequestDto("test user", "password");
+        User user = new User("test user", "password", UserRoleEnum.USER);
+
+        when(userRepository.findByUsername("test user")).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
+
+        // when
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            userService.signup(requestDto);
+        });
+
+        // then
+        assertEquals("중복된 사용자가 존재합니다.", e.getMessage());
+        verify(userRepository, never()).save(any(User.class));
     }
 }
