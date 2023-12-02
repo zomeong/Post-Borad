@@ -4,6 +4,7 @@ import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
 import com.sparta.post_board.repository.UserRepository;
 import com.sparta.post_board.security.UserDetailsServiceImpl;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,7 @@ public class UserDetailsServiceTest {
     UserDetailsServiceImpl userDetailsService;
 
     @Test
+    @DisplayName("유저 이름으로 유저 찾기 성공")
     void loadUserByUsernameTest1(){
         // given
         User user = new User("test user", "password", UserRoleEnum.USER);
@@ -44,6 +46,7 @@ public class UserDetailsServiceTest {
     }
 
     @Test
+    @DisplayName("유저 이름으로 유저 찾기 실패")
     void loadUserByUsernameTest2(){
         // given
         String username = "test user";
