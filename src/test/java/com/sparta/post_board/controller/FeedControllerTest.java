@@ -29,11 +29,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -91,8 +93,8 @@ public class FeedControllerTest {
         // when - then
         mvc.perform(post("/feeds")
                         .content(feedInfo)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                        .accept(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
                         .principal(mockPrincipal)
                 )
                 .andExpect(status().isOk())
@@ -129,10 +131,10 @@ public class FeedControllerTest {
         String feedInfo = objectMapper.writeValueAsString(requestDto);
 
         // when - then
-        mvc.perform(put("/feeds/{feedId}", feedId)
+       mvc.perform(put("/feeds/{feedId}", feedId)
                         .content(feedInfo)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                        .accept(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
                         .principal(mockPrincipal)
                 )
                 .andExpect(status().isOk())

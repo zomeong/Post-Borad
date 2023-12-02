@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -83,8 +84,8 @@ public class CommentControllerTest {
         // when - then
         mvc.perform(post("/feeds/{feedId}/comments", feedId)
                         .content(commentInfo)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                        .accept(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
                         .principal(mockPrincipal)
                 )
                 .andExpect(status().isOk())
@@ -103,8 +104,8 @@ public class CommentControllerTest {
         // when - then
         mvc.perform(put("/feeds/{feedId}/comments/{commentId}", feedId, commentId)
                         .content(commentInfo)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                        .accept(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
                         .principal(mockPrincipal)
                 )
                 .andExpect(status().isOk())
