@@ -150,7 +150,8 @@ public class FeedControllerTest {
         Feed feed = new Feed(requestDto, new User());
 
         List<FeedResponseDto> dtoList = Arrays.asList(
-                new FeedResponseDto(feed), new FeedResponseDto(feed)
+                new FeedResponseDto(feed),
+                new FeedResponseDto(feed)
         );
 
         when(feedService.searchFeed(keyword)).thenReturn(dtoList);
@@ -162,6 +163,19 @@ public class FeedControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value(dtoList.get(0).getTitle()))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시글 비공개")
+    void blindFeedTest() throws Exception {
+        // given
+        Long feedId = 1L;
+
+        // when - then
+        mvc.perform(put("/feeds/{feedId}/blind", feedId).principal(mockPrincipal))
+                .andExpect(status().isOk())
+                .andExpect(content().string("할일이 비공개 처리 되었습니다."))
                 .andDo(print());
     }
 
