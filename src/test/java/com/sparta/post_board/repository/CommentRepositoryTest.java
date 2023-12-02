@@ -14,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("test")
@@ -47,9 +49,9 @@ public class CommentRepositoryTest {
         Long feedId = 1L;
 
         // when
-        commentRepository.findByIdAndFeedId(commentId, feedId);
+        Optional<Comment> findComment = commentRepository.findByIdAndFeedId(commentId, feedId);
 
         // then
-        assertNotNull(comment);
+        assertNotNull(findComment);
     }
 }
