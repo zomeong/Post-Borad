@@ -1,17 +1,13 @@
 package com.sparta.post_board.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.post_board.contorller.FeedController;
-import com.sparta.post_board.contorller.UserController;
-import com.sparta.post_board.dto.FeedRequestDto;
-import com.sparta.post_board.dto.FeedResponseDto;
-import com.sparta.post_board.entity.Feed;
+import com.sparta.post_board.contorller.CommentController;
+import com.sparta.post_board.dto.CommentRequestDto;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
 import com.sparta.post_board.security.UserDetailsImpl;
 import com.sparta.post_board.security.WebSecurityConfig;
-import com.sparta.post_board.service.FeedService;
-import com.sparta.post_board.service.UserService;
+import com.sparta.post_board.service.CommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,24 +21,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @WebMvcTest(
-        controllers = {FeedController.class},
+        controllers = {CommentController.class},
         excludeFilters = {
                 @ComponentScan.Filter(
                         type = FilterType.ASSIGNABLE_TYPE,
@@ -50,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 )
         }
 )
-public class FeedControllerTest {
+public class CommentControllerTest {
     private MockMvc mvc;
 
     private Principal mockPrincipal;
@@ -62,7 +53,7 @@ public class FeedControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    FeedService feedService;
+    CommentService commentService;
 
     @BeforeEach
     public void setup() {
@@ -82,15 +73,16 @@ public class FeedControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 작성")
-    void createFeedTest() throws Exception {
+    @DisplayName("댓글 작성")
+    void createCommentTest() throws Exception {
         // given
-        FeedRequestDto requestDto = new FeedRequestDto("제목", "내용");
-        String feedInfo = objectMapper.writeValueAsString(requestDto);
+        Long feedId = 1L;
+        CommentRequestDto requestDto = new CommentRequestDto("댓글");
+        String commentInfo = objectMapper.writeValueAsString(requestDto);
 
         // when - then
-        mvc.perform(post("/feeds")
-                        .content(feedInfo)
+        mvc.perform(post("/feeds/{feedId}/comments", feedId)
+                        .content(commentInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -100,37 +92,17 @@ public class FeedControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 조회")
-    void getFeedTest() throws Exception {
+    @DisplayName("댓글 수정")
+    void updateCommentTest() throws Exception{
         // given
         Long feedId = 1L;
-        FeedRequestDto requestDto = new FeedRequestDto("제목", "내용");
-        User user = new User("test user", "password", UserRoleEnum.USER);
-        Feed feed = new Feed(requestDto, user);
-        FeedResponseDto responseDto = new FeedResponseDto(feed);
-
-        when(feedService.getFeed(feedId)).thenReturn(responseDto);
+        Long commentId = 1L;
+        CommentRequestDto requestDto = new CommentRequestDto("댓글 수정");
+        String commentInfo = objectMapper.writeValueAsString(requestDto);
 
         // when - then
-        mvc.perform(get("/feeds/{feedId}", feedId).principal(mockPrincipal))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value(responseDto.getTitle()))
-                .andExpect(jsonPath("$.contents").value(responseDto.getContents()))
-                .andExpect(jsonPath("$.username").value(responseDto.getUsername()))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("게시글 수정")
-    void updateFeedTest() throws Exception {
-        // given
-        Long feedId = 1L;
-        FeedRequestDto requestDto = new FeedRequestDto("제목 수정", "내용 수정");
-        String feedInfo = objectMapper.writeValueAsString(requestDto);
-
-        // when - then
-        mvc.perform(put("/feeds/{feedId}", feedId)
-                        .content(feedInfo)
+        mvc.perform(put("/feeds/{feedId}/comments/{commentId}", feedId, commentId)
+                        .content(commentInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -140,39 +112,18 @@ public class FeedControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 검색")
-    void searchFeedTest() throws Exception {
+    @DisplayName("댓글 삭제")
+    void deleteCommentTest() throws Exception{
         // given
-        String keyword = "제목";
-        FeedRequestDto requestDto = new FeedRequestDto("제목", "내용");
-        Feed feed = new Feed(requestDto, new User());
-
-        List<FeedResponseDto> dtoList = Arrays.asList(
-                new FeedResponseDto(feed), new FeedResponseDto(feed)
-        );
-
-        when(feedService.searchFeed(keyword)).thenReturn(dtoList);
+        Long feedId = 1L;
+        Long commentId = 1L;
 
         // when - then
-        mvc.perform(get("/feeds/search")
-                        .param("keyword", keyword)
+        mvc.perform(delete("/feeds/{feedId}/comments/{commentId}", feedId, commentId)
                         .principal(mockPrincipal)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value(dtoList.get(0).getTitle()))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("할일 완료")
-    void completeFeedTest() throws Exception {
-        // given
-        Long feedId = 1L;
-
-        // when - then
-        mvc.perform(put("/feeds/{feedId}/complete", feedId).principal(mockPrincipal))
-                .andExpect(status().isOk())
-                .andExpect(content().string("할일 완료!"))
+                .andExpect(content().string("댓글이 삭제되었습니다."))
                 .andDo(print());
     }
 }
