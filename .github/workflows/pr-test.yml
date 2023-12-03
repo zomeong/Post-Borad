@@ -2,7 +2,8 @@ name: PR Test
 
 on:
   pull_request:
-    branches: [ "main" ]    # main branch에 PR을 보낼 때 실행
+    branches:
+      - main
 
 jobs:
   test:
