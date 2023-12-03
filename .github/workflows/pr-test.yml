@@ -24,7 +24,7 @@ jobs:
 
       # Gradle test를 실행한다
       - name: Test with Gradle
-        run: ./gradlew --info test -string.profiles.active=test
+        run: ./gradlew --info test -Dstring.profiles.active=test
 
       # 테스트 후 Result 출력
       - name: Publish Unit Test Results
