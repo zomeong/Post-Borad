@@ -19,7 +19,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # Gradle test를 실행한다
+      # Gradle test 실행
       - name: Test with Gradle
         run: ./gradlew --info test
 
