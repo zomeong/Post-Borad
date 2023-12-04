@@ -16,10 +16,7 @@ jobs:
           java-version: 17
 
       - name : Use environment variable
-        run: |
-         echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> .env
-        env:
-          JWT_SECRET_KEY: ${{secrets.JWT_SECRET_KEY}}
+        run: echo "Value of JWT_SECRET_KEY is ${{ secrets.JWT_SECRET_KEY }}"
 
       # Gradle wrapper 파일 실행 권한주기
       - name: Grant execute permission for gradlew
