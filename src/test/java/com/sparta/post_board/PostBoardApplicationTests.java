@@ -5,6 +5,9 @@ import com.sparta.post_board.entity.Comment;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
+import com.sparta.post_board.exception.DuplicateUserException;
+import com.sparta.post_board.exception.NotFoundException;
+import com.sparta.post_board.exception.OnlyAuthorAccessException;
 import com.sparta.post_board.repository.CommentRepository;
 import com.sparta.post_board.repository.FeedRepository;
 import com.sparta.post_board.repository.UserRepository;
@@ -81,7 +84,7 @@ class PostBoardApplicationTests {
         UserRequestDto requestDto = new UserRequestDto("test user", "password");
 
         // when
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(DuplicateUserException.class, () -> {
             userService.signup(requestDto);
         });
 
@@ -136,12 +139,12 @@ class PostBoardApplicationTests {
     @DisplayName("피드 조회 실패")
     void getFeedTest2(){
         // when
-        Exception e = assertThrows(NullPointerException.class, () -> {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             feedService.getFeed(10L);
         });
 
         // then
-        assertEquals("해당 피드는 존재하지 않습니다.", e.getMessage());
+        assertEquals("피드을(를) 찾을 수 없습니다.", e.getMessage());
     }
 
     @Test
@@ -167,12 +170,12 @@ class PostBoardApplicationTests {
         String keyword = "존재하지 않는 제목";
 
         // when
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             feedService.searchFeed(keyword);
         });
 
         // then
-        assertEquals("검색 결과가 없습니다.", e.getMessage());
+        assertEquals("검색 결과을(를) 찾을 수 없습니다.", e.getMessage());
     }
 
     @Test
@@ -199,7 +202,7 @@ class PostBoardApplicationTests {
         FeedRequestDto updateDto = new FeedRequestDto("제목 수정", "내용 수정");
 
         // When
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(OnlyAuthorAccessException.class, () -> {
             feedService.updateFeed(feedId, updateDto, user2);
         });
 
@@ -228,12 +231,12 @@ class PostBoardApplicationTests {
         CommentRequestDto requestDto = new CommentRequestDto("댓글");
 
         // when
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             commentService.createComment(10L, requestDto, user);
         });
 
         // then
-        assertEquals("선택한 피드가 존재하지 않습니다.", e.getMessage());
+        assertEquals("피드을(를) 찾을 수 없습니다.", e.getMessage());
     }
 
     @Test
@@ -259,7 +262,7 @@ class PostBoardApplicationTests {
         CommentRequestDto requestDto = new CommentRequestDto("댓글 수정");
 
         // when
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(OnlyAuthorAccessException.class, () -> {
             commentService.updateComment(feedId, commentId, requestDto, user2);
         });
 

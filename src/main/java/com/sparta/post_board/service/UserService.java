@@ -3,6 +3,7 @@ package com.sparta.post_board.service;
 import com.sparta.post_board.dto.UserRequestDto;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
+import com.sparta.post_board.exception.DuplicateUserException;
 import com.sparta.post_board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,7 @@ public class UserService {
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
         if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new DuplicateUserException();
         }
 
         // 사용자 등록

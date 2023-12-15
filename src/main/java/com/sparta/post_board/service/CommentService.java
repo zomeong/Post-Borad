@@ -5,6 +5,8 @@ import com.sparta.post_board.dto.CommentResponseDto;
 import com.sparta.post_board.entity.Comment;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
+import com.sparta.post_board.exception.NotFoundException;
+import com.sparta.post_board.exception.OnlyAuthorAccessException;
 import com.sparta.post_board.repository.CommentRepository;
 import com.sparta.post_board.repository.FeedRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +20,9 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final FeedRepository feedRepository;
 
-
     public CommentResponseDto createComment(Long id, CommentRequestDto requestDto, User user) {
         Feed feed = feedRepository.findById(id).orElseThrow(()
-                -> new IllegalArgumentException("선택한 피드가 존재하지 않습니다.")
+                -> new NotFoundException("피드")
         );
         Comment comment = commentRepository.save(new Comment(requestDto, feed, user));
         return new CommentResponseDto(comment);
@@ -43,13 +44,13 @@ public class CommentService {
 
     private Comment findComment(Long commentId, Long feedId) {
         return commentRepository.findByIdAndFeedId(commentId, feedId).orElseThrow(()
-                -> new IllegalArgumentException("선택한 댓글이 존재하지 않습니다.")
+                -> new NotFoundException("댓글")
         );
     }
 
     private void checkUser(Comment comment, User user){
         if(!comment.getUser().getId().equals(user.getId())){
-            throw new IllegalArgumentException("작성자만 수정/삭제 가능합니다.");
+            throw new OnlyAuthorAccessException();
         }
     }
 }

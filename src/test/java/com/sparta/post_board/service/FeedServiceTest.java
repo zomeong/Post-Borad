@@ -4,6 +4,8 @@ import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
+import com.sparta.post_board.exception.NotFoundException;
+import com.sparta.post_board.exception.OnlyAuthorAccessException;
 import com.sparta.post_board.repository.FeedRepository;
 import com.sparta.post_board.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,7 +95,7 @@ public class FeedServiceTest {
         when(feedRepository.findById(feedId)).thenReturn(Optional.of(feed));
 
         // When
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(OnlyAuthorAccessException.class, () -> {
             feedService.updateFeed(feedId, dto, user2);
         });
 
@@ -141,12 +143,12 @@ public class FeedServiceTest {
         when(feedRepository.findByTitleOrderByCreatedAtDesc(keyword)).thenReturn(Collections.emptyList());
 
         // when
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             feedService.searchFeed(keyword);
         });
 
         // then
-        assertEquals("검색 결과가 없습니다.", e.getMessage());
+        assertEquals("검색 결과을(를) 찾을 수 없습니다.", e.getMessage());
     }
 
     @Test

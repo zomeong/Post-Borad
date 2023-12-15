@@ -4,6 +4,8 @@ import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
+import com.sparta.post_board.exception.NotFoundException;
+import com.sparta.post_board.exception.OnlyAuthorAccessException;
 import com.sparta.post_board.repository.FeedRepository;
 import com.sparta.post_board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +51,7 @@ public class FeedService {
                 .map(FeedResponseDto::new).toList();
 
         if(feedList.isEmpty()){
-            throw new IllegalArgumentException("검색 결과가 없습니다.");
+            throw new NotFoundException("검색 결과");
         }
         return feedList;
     }
@@ -83,13 +85,13 @@ public class FeedService {
 
     private Feed findFeed(Long id) {
         return feedRepository.findById(id).orElseThrow(() ->
-                new NullPointerException("해당 피드는 존재하지 않습니다.")
+                new NotFoundException("피드")
         );
     }
 
     private void checkUser(Feed feed, User user) {
         if (!feed.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("작성자만 수정/삭제 가능합니다.");
+            throw new OnlyAuthorAccessException();
         }
     }
 }
