@@ -1,7 +1,8 @@
 package com.sparta.post_board;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.post_board.controller.MockSpringSecurityFilter;
 import com.sparta.post_board.dto.*;
-import com.sparta.post_board.entity.Comment;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
@@ -17,24 +18,38 @@ import com.sparta.post_board.service.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Collections;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PostBoardApplicationTests {
+
+    private MockMvc mvc;
+
+    @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     UserService userService;
@@ -60,36 +75,54 @@ class PostBoardApplicationTests {
     User user;
     Long feedId = 1L;
 
-    @Test
-    @Order(1)
-    @DisplayName("회원가입 성공")
-    void signupTest1() {
-        // given
-        UserRequestDto requestDto = new UserRequestDto("test user", "password");
-
-        // when
-        userService.signup(requestDto);
-        user = userRepository.findById(1L).orElse(null);
-
-        // then
-        assertNotNull(user);
-        assertEquals("test user", user.getUsername());
-        assertEquals(UserRoleEnum.USER, user.getRole());
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(springSecurity(new MockSpringSecurityFilter()))
+                .build();
     }
 
-    @Test
-    @DisplayName("회원가입 실패 - 중복된 유저")
-    void signupTest2() {
-        // given
-        UserRequestDto requestDto = new UserRequestDto("test user", "password");
 
-        // when
-        Exception e = assertThrows(DuplicateUserException.class, () -> {
-            userService.signup(requestDto);
-        });
+    @Nested
+    @DisplayName("회원가입")
+    class signupTest {
 
-        // then
-        assertEquals("중복된 사용자가 존재합니다.", e.getMessage());
+        @Test
+        @Order(1)
+        @DisplayName("회원가입 성공")
+        void signupTest1() throws Exception {
+            // given
+            UserRequestDto requestDto = new UserRequestDto("username", "password");
+            String userInfo = objectMapper.writeValueAsString(requestDto);
+
+            // when - then
+            mvc.perform(post("/user/signup")
+                            .content(userInfo)
+                            .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                            .accept(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("회원가입 성공"))
+                    .andDo(print());
+        }
+
+        @Test
+        @DisplayName("회원가입 실패 - 중복된 유저")
+        void signupTest2() throws Exception {
+            // given
+            UserRequestDto requestDto = new UserRequestDto("username", "password");
+            String userInfo = objectMapper.writeValueAsString(requestDto);
+
+            // when - then
+            mvc.perform(post("/user/signup")
+                            .content(userInfo)
+                            .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                            .accept(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("중복된 사용자가 존재합니다."))
+                    .andDo(print());
+        }
     }
 
     @Test
@@ -97,6 +130,10 @@ class PostBoardApplicationTests {
     @DisplayName("피드 작성 성공")
     void createFeedTest(){
         // given
+        UserRequestDto userDto = new UserRequestDto("test user", "password");
+        userService.signup(userDto);
+        user = userRepository.findById(1L).orElse(null);
+
         FeedRequestDto requestDto = new FeedRequestDto("제목", "내용");
 
         // when

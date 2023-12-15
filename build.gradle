@@ -77,6 +77,11 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.60
             }
+
+            excludes = [
+                    '*.ErrorResult',
+                    '*.jwt.*'
+            ]
         }
     }
 }

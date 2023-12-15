@@ -102,8 +102,8 @@ public class FeedControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 조회")
-    void getFeedTest() throws Exception {
+    @DisplayName("게시글 조회 성공")
+    void getFeedTest1() throws Exception {
         // given
         Long feedId = 1L;
         FeedRequestDto requestDto = new FeedRequestDto("제목", "내용");
@@ -119,6 +119,19 @@ public class FeedControllerTest {
                 .andExpect(jsonPath("$.title").value(responseDto.getTitle()))
                 .andExpect(jsonPath("$.contents").value(responseDto.getContents()))
                 .andExpect(jsonPath("$.username").value(responseDto.getUsername()))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시글 조회 실패 - 게시글 없음")
+    void getFeedTest2() throws Exception {
+        // given
+        Long feedId = 1L;
+        when(feedService.getFeed(feedId)).thenThrow(IllegalArgumentException.class);
+
+        // when - then
+        mvc.perform(get("/feeds/{feedId}", feedId).principal(mockPrincipal))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 
