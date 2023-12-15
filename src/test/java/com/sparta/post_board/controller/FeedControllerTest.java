@@ -8,6 +8,7 @@ import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
+import com.sparta.post_board.exception.NotFoundException;
 import com.sparta.post_board.security.UserDetailsImpl;
 import com.sparta.post_board.security.WebSecurityConfig;
 import com.sparta.post_board.service.FeedService;
@@ -127,7 +128,7 @@ public class FeedControllerTest {
     void getFeedTest2() throws Exception {
         // given
         Long feedId = 1L;
-        when(feedService.getFeed(feedId)).thenThrow(IllegalArgumentException.class);
+        when(feedService.getFeed(feedId)).thenThrow(NotFoundException.class);
 
         // when - then
         mvc.perform(get("/feeds/{feedId}", feedId).principal(mockPrincipal))

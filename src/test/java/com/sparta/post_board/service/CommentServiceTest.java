@@ -7,6 +7,8 @@ import com.sparta.post_board.entity.Comment;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
+import com.sparta.post_board.exception.NotFoundException;
+import com.sparta.post_board.exception.OnlyAuthorAccessException;
 import com.sparta.post_board.repository.CommentRepository;
 import com.sparta.post_board.repository.FeedRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,12 +78,12 @@ public class CommentServiceTest {
         when(feedRepository.findById(1L)).thenReturn(Optional.empty());
 
         // when
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             commentService.createComment(1L, commentDto, user);
         });
 
         // then
-        assertEquals("선택한 피드가 존재하지 않습니다.", e.getMessage());
+        assertEquals("피드을(를) 찾을 수 없습니다.", e.getMessage());
      }
 
     @Test
@@ -106,12 +108,12 @@ public class CommentServiceTest {
         when(commentRepository.findByIdAndFeedId(1L, 1L)).thenReturn(Optional.empty());
 
         // when
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(NotFoundException.class, () -> {
             commentService.updateComment(1L, 1L, requestDto, user);
         });
 
         // then
-        assertEquals("선택한 댓글이 존재하지 않습니다.", e.getMessage());
+        assertEquals("댓글을(를) 찾을 수 없습니다.", e.getMessage());
      }
 
      @Test
@@ -123,7 +125,7 @@ public class CommentServiceTest {
          when(commentRepository.findByIdAndFeedId(1L, 1L)).thenReturn(Optional.of(comment));
 
          // when
-         Exception e = assertThrows(IllegalArgumentException.class, () -> {
+         Exception e = assertThrows(OnlyAuthorAccessException.class, () -> {
              commentService.updateComment(1L, 1L, requestDto, user2);
          });
 

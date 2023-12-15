@@ -3,6 +3,7 @@ package com.sparta.post_board.service;
 import com.sparta.post_board.dto.UserRequestDto;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
+import com.sparta.post_board.exception.DuplicateUserException;
 import com.sparta.post_board.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,7 +68,7 @@ public class UserServiceTest {
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
 
         // when
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+        Exception e = assertThrows(DuplicateUserException.class, () -> {
             userService.signup(requestDto);
         });
 
