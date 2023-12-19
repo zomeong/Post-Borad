@@ -6,15 +6,14 @@ import com.sparta.post_board.dto.*;
 import com.sparta.post_board.entity.Feed;
 import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
-import com.sparta.post_board.exception.DuplicateUserException;
 import com.sparta.post_board.exception.NotFoundException;
 import com.sparta.post_board.exception.OnlyAuthorAccessException;
 import com.sparta.post_board.repository.CommentRepository;
 import com.sparta.post_board.repository.FeedRepository;
 import com.sparta.post_board.repository.UserRepository;
-import com.sparta.post_board.service.CommentService;
-import com.sparta.post_board.service.FeedService;
-import com.sparta.post_board.service.UserService;
+import com.sparta.post_board.service.CommentServiceImpl;
+import com.sparta.post_board.service.FeedServiceImpl;
+import com.sparta.post_board.service.UserServiceImpl;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,13 +51,13 @@ class PostBoardApplicationTests {
     private ObjectMapper objectMapper;
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userServiceImpl;
 
     @Autowired
-    FeedService feedService;
+    FeedServiceImpl feedServiceImpl;
 
     @Autowired
-    CommentService commentService;
+    CommentServiceImpl commentServiceImpl;
 
     @Autowired
     UserRepository userRepository;
@@ -131,13 +130,13 @@ class PostBoardApplicationTests {
     void createFeedTest(){
         // given
         UserRequestDto userDto = new UserRequestDto("test user", "password");
-        userService.signup(userDto);
+        userServiceImpl.signup(userDto);
         user = userRepository.findById(1L).orElse(null);
 
         FeedRequestDto requestDto = new FeedRequestDto("제목", "내용");
 
         // when
-        FeedResponseDto responseDto = feedService.createFeed(requestDto, user);
+        FeedResponseDto responseDto = feedServiceImpl.createFeed(requestDto, user);
 
         // then
         assertEquals("제목", responseDto.getTitle());
@@ -154,7 +153,7 @@ class PostBoardApplicationTests {
         feedRepository.save(feed2);
 
         // when
-        LinkedHashMap<String, List<FeedResponseDto>> responseList = feedService.getAllFeeds(user);
+        LinkedHashMap<String, List<FeedResponseDto>> responseList = feedServiceImpl.getAllFeeds(user);
 
         // then
         assertEquals(2, responseList.get("test user").size());
@@ -165,7 +164,7 @@ class PostBoardApplicationTests {
     @DisplayName("피드 조회 성공")
     void getFeedTest1(){
         // when
-        FeedResponseDto responseDto = feedService.getFeed(feedId);
+        FeedResponseDto responseDto = feedServiceImpl.getFeed(feedId);
 
         // then
         assertEquals("제목", responseDto.getTitle());
@@ -177,7 +176,7 @@ class PostBoardApplicationTests {
     void getFeedTest2(){
         // when
         Exception e = assertThrows(NotFoundException.class, () -> {
-            feedService.getFeed(10L);
+            feedServiceImpl.getFeed(10L);
         });
 
         // then
@@ -192,7 +191,7 @@ class PostBoardApplicationTests {
         String keyword = "제목";
 
         // when
-        List<FeedResponseDto> responseList = feedService.searchFeed(keyword);
+        List<FeedResponseDto> responseList = feedServiceImpl.searchFeed(keyword);
 
         // then
         assertThat(responseList).hasSize(2);
@@ -208,7 +207,7 @@ class PostBoardApplicationTests {
 
         // when
         Exception e = assertThrows(NotFoundException.class, () -> {
-            feedService.searchFeed(keyword);
+            feedServiceImpl.searchFeed(keyword);
         });
 
         // then
@@ -222,7 +221,7 @@ class PostBoardApplicationTests {
         FeedRequestDto updateDto = new FeedRequestDto("제목 수정", "내용 수정");
 
         // When
-        FeedResponseDto responseDto = feedService.updateFeed(feedId, updateDto, user);
+        FeedResponseDto responseDto = feedServiceImpl.updateFeed(feedId, updateDto, user);
 
         // Then
         assertEquals("제목 수정", responseDto.getTitle());
@@ -240,7 +239,7 @@ class PostBoardApplicationTests {
 
         // When
         Exception e = assertThrows(OnlyAuthorAccessException.class, () -> {
-            feedService.updateFeed(feedId, updateDto, user2);
+            feedServiceImpl.updateFeed(feedId, updateDto, user2);
         });
 
         // Then
@@ -255,7 +254,7 @@ class PostBoardApplicationTests {
         CommentRequestDto requestDto = new CommentRequestDto("댓글");
 
         // When
-        CommentResponseDto responseDto = commentService.createComment(feedId, requestDto, user);
+        CommentResponseDto responseDto = commentServiceImpl.createComment(feedId, requestDto, user);
 
         // Then
         assertEquals("댓글", responseDto.getContents());
@@ -269,7 +268,7 @@ class PostBoardApplicationTests {
 
         // when
         Exception e = assertThrows(NotFoundException.class, () -> {
-            commentService.createComment(10L, requestDto, user);
+            commentServiceImpl.createComment(10L, requestDto, user);
         });
 
         // then
@@ -284,7 +283,7 @@ class PostBoardApplicationTests {
         CommentRequestDto requestDto = new CommentRequestDto("댓글 수정");
 
         // When
-        CommentResponseDto responseDto = commentService.updateComment(feedId, commentId, requestDto, user);
+        CommentResponseDto responseDto = commentServiceImpl.updateComment(feedId, commentId, requestDto, user);
 
         // Then
         assertEquals("댓글 수정", responseDto.getContents());
@@ -300,7 +299,7 @@ class PostBoardApplicationTests {
 
         // when
         Exception e = assertThrows(OnlyAuthorAccessException.class, () -> {
-            commentService.updateComment(feedId, commentId, requestDto, user2);
+            commentServiceImpl.updateComment(feedId, commentId, requestDto, user2);
         });
 
         // then

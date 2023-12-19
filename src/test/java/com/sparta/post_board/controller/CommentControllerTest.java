@@ -7,7 +7,7 @@ import com.sparta.post_board.entity.User;
 import com.sparta.post_board.entity.UserRoleEnum;
 import com.sparta.post_board.security.UserDetailsImpl;
 import com.sparta.post_board.security.WebSecurityConfig;
-import com.sparta.post_board.service.CommentService;
+import com.sparta.post_board.service.CommentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ public class CommentControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    CommentService commentService;
+    CommentServiceImpl commentServiceImpl;
 
     @BeforeEach
     public void setup() {

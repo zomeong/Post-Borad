@@ -1,7 +1,7 @@
 package com.sparta.post_board.contorller;
 
 import com.sparta.post_board.dto.UserRequestDto;
-import com.sparta.post_board.service.UserService;
+import com.sparta.post_board.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     @PostMapping("/user/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody UserRequestDto requestDto, BindingResult bindingResult) {
@@ -34,7 +34,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패");
         }
 
-        userService.signup(requestDto);
+        userServiceImpl.signup(requestDto);
 
         return ResponseEntity.ok("회원가입 성공");
     }

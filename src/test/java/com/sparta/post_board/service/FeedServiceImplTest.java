@@ -15,14 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +28,7 @@ import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class FeedServiceTest {
+public class FeedServiceImplTest {
     @Mock
     FeedRepository feedRepository;
 
@@ -38,7 +36,7 @@ public class FeedServiceTest {
     UserRepository userRepository;
 
     @InjectMocks
-    FeedService feedService;
+    FeedServiceImpl feedServiceImpl;
 
     User user;
     Feed feed;
@@ -60,7 +58,7 @@ public class FeedServiceTest {
         when(feedRepository.save(any(Feed.class))).thenReturn(feed);
 
         // when
-        FeedResponseDto responseDto = feedService.createFeed(dto, user);
+        FeedResponseDto responseDto = feedServiceImpl.createFeed(dto, user);
 
         // then
         assertEquals("제목", responseDto.getTitle());
@@ -77,7 +75,7 @@ public class FeedServiceTest {
         when(feedRepository.findById(feedId)).thenReturn(Optional.of(feed));
 
         // When
-        FeedResponseDto responseDto = feedService.updateFeed(feedId, updateDto, user);
+        FeedResponseDto responseDto = feedServiceImpl.updateFeed(feedId, updateDto, user);
 
         // Then
         assertEquals("제목 수정", responseDto.getTitle());
@@ -96,7 +94,7 @@ public class FeedServiceTest {
 
         // When
         Exception e = assertThrows(OnlyAuthorAccessException.class, () -> {
-            feedService.updateFeed(feedId, dto, user2);
+            feedServiceImpl.updateFeed(feedId, dto, user2);
         });
 
         // Then
@@ -111,7 +109,7 @@ public class FeedServiceTest {
         when(feedRepository.findById(feedId)).thenReturn(Optional.of(feed));
 
         // when
-        FeedResponseDto responseDto = feedService.getFeed(feedId);
+        FeedResponseDto responseDto = feedServiceImpl.getFeed(feedId);
 
         // then
         assertEquals("제목", responseDto.getTitle());
@@ -127,7 +125,7 @@ public class FeedServiceTest {
          when(feedRepository.findByTitleOrderByCreatedAtDesc(keyword)).thenReturn(List.of(feed, feed1));
 
          // when
-         List<FeedResponseDto> responseList = feedService.searchFeed(keyword);
+         List<FeedResponseDto> responseList = feedServiceImpl.searchFeed(keyword);
 
          // then
          assertThat(responseList).hasSize(2);
@@ -144,7 +142,7 @@ public class FeedServiceTest {
 
         // when
         Exception e = assertThrows(NotFoundException.class, () -> {
-            feedService.searchFeed(keyword);
+            feedServiceImpl.searchFeed(keyword);
         });
 
         // then
@@ -159,7 +157,7 @@ public class FeedServiceTest {
         when(feedRepository.findById(feedId)).thenReturn(Optional.of(feed));
 
         // When
-        feedService.blindFeed(feedId, user);
+        feedServiceImpl.blindFeed(feedId, user);
 
         // then
         assertTrue(feed.isBlind());
@@ -173,7 +171,7 @@ public class FeedServiceTest {
         when(feedRepository.findById(feedId)).thenReturn(Optional.of(feed));
 
         // When
-        feedService.completeFeed(feedId, user);
+        feedServiceImpl.completeFeed(feedId, user);
 
         // then
         assertTrue(feed.isComplete());

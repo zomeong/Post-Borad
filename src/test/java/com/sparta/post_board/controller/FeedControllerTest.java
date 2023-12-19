@@ -2,7 +2,6 @@ package com.sparta.post_board.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.post_board.contorller.FeedController;
-import com.sparta.post_board.contorller.UserController;
 import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
@@ -11,8 +10,7 @@ import com.sparta.post_board.entity.UserRoleEnum;
 import com.sparta.post_board.exception.NotFoundException;
 import com.sparta.post_board.security.UserDetailsImpl;
 import com.sparta.post_board.security.WebSecurityConfig;
-import com.sparta.post_board.service.FeedService;
-import com.sparta.post_board.service.UserService;
+import com.sparta.post_board.service.FeedServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,15 +24,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -65,7 +60,7 @@ public class FeedControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    FeedService feedService;
+    FeedServiceImpl feedServiceImpl;
 
     @BeforeEach
     public void setup() {
@@ -112,7 +107,7 @@ public class FeedControllerTest {
         Feed feed = new Feed(requestDto, user);
         FeedResponseDto responseDto = new FeedResponseDto(feed);
 
-        when(feedService.getFeed(feedId)).thenReturn(responseDto);
+        when(feedServiceImpl.getFeed(feedId)).thenReturn(responseDto);
 
         // when - then
         mvc.perform(get("/feeds/{feedId}", feedId).principal(mockPrincipal))
@@ -128,7 +123,7 @@ public class FeedControllerTest {
     void getFeedTest2() throws Exception {
         // given
         Long feedId = 1L;
-        when(feedService.getFeed(feedId)).thenThrow(NotFoundException.class);
+        when(feedServiceImpl.getFeed(feedId)).thenThrow(NotFoundException.class);
 
         // when - then
         mvc.perform(get("/feeds/{feedId}", feedId).principal(mockPrincipal))
@@ -168,7 +163,7 @@ public class FeedControllerTest {
                 new FeedResponseDto(feed)
         );
 
-        when(feedService.searchFeed(keyword)).thenReturn(dtoList);
+        when(feedServiceImpl.searchFeed(keyword)).thenReturn(dtoList);
 
         // when - then
         mvc.perform(get("/feeds/search")

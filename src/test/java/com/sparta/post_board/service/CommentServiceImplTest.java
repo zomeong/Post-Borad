@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class CommentServiceTest {
+public class CommentServiceImplTest {
     @Mock
     FeedRepository feedRepository;
 
@@ -37,7 +37,7 @@ public class CommentServiceTest {
     CommentRepository commentRepository;
 
     @InjectMocks
-    CommentService commentService;
+    CommentServiceImpl commentServiceImpl;
 
     User user;
     Feed feed;
@@ -65,7 +65,7 @@ public class CommentServiceTest {
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 
         // When
-        CommentResponseDto responseDto = commentService.createComment(1L, commentDto, user);
+        CommentResponseDto responseDto = commentServiceImpl.createComment(1L, commentDto, user);
 
         // Then
         assertEquals("댓글", responseDto.getContents());
@@ -79,7 +79,7 @@ public class CommentServiceTest {
 
         // when
         Exception e = assertThrows(NotFoundException.class, () -> {
-            commentService.createComment(1L, commentDto, user);
+            commentServiceImpl.createComment(1L, commentDto, user);
         });
 
         // then
@@ -94,7 +94,7 @@ public class CommentServiceTest {
         when(commentRepository.findByIdAndFeedId(1L, 1L)).thenReturn(Optional.of(comment));
 
         // When
-        CommentResponseDto responseDto = commentService.updateComment(1L, 1L, requestDto, user);
+        CommentResponseDto responseDto = commentServiceImpl.updateComment(1L, 1L, requestDto, user);
 
         // Then
         assertEquals("댓글 수정", responseDto.getContents());
@@ -109,7 +109,7 @@ public class CommentServiceTest {
 
         // when
         Exception e = assertThrows(NotFoundException.class, () -> {
-            commentService.updateComment(1L, 1L, requestDto, user);
+            commentServiceImpl.updateComment(1L, 1L, requestDto, user);
         });
 
         // then
@@ -126,7 +126,7 @@ public class CommentServiceTest {
 
          // when
          Exception e = assertThrows(OnlyAuthorAccessException.class, () -> {
-             commentService.updateComment(1L, 1L, requestDto, user2);
+             commentServiceImpl.updateComment(1L, 1L, requestDto, user2);
          });
 
          // then

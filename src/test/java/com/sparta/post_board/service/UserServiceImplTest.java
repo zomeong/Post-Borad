@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class UserServiceImplTest {
 
     @Mock
     UserRepository userRepository;
@@ -33,7 +33,7 @@ public class UserServiceTest {
     PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    UserService userService;
+    UserServiceImpl userServiceImpl;
 
     @Test
     @DisplayName("회원가입 성공")
@@ -45,7 +45,7 @@ public class UserServiceTest {
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
 
         // when
-        userService.signup(requestDto);
+        userServiceImpl.signup(requestDto);
 
         // then
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
@@ -69,7 +69,7 @@ public class UserServiceTest {
 
         // when
         Exception e = assertThrows(DuplicateUserException.class, () -> {
-            userService.signup(requestDto);
+            userServiceImpl.signup(requestDto);
         });
 
         // then
