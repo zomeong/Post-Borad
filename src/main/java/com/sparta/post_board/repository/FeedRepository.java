@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface FeedRepository extends JpaRepository<Feed, Long> {
+public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositoryQuery {
     List<Feed> findAllByUserAndCompleteOrderByCreatedAtDesc(User user, boolean complete);
-
-    List<Feed> findByTitleOrderByCreatedAtDesc(String keyword);
 }

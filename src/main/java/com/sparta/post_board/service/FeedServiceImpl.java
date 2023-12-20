@@ -1,5 +1,6 @@
 package com.sparta.post_board.service;
 
+import com.sparta.post_board.common.PageDto;
 import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
@@ -9,12 +10,15 @@ import com.sparta.post_board.exception.OnlyAuthorAccessException;
 import com.sparta.post_board.repository.FeedRepository;
 import com.sparta.post_board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,16 +65,13 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public List<FeedResponseDto> searchFeed(String keyword) {
-        List<FeedResponseDto> feedList = feedRepository.findByTitleOrderByCreatedAtDesc(keyword)
-                .stream()
-                .filter(Objects::nonNull)
-                .map(FeedResponseDto::new).toList();
-
-        if(feedList.isEmpty()){
-            throw new NotFoundException("검색 결과");
-        }
-        return feedList;
+    @Transactional(readOnly = true)
+    public Page<FeedResponseDto> searchFeed(String keyword, PageDto pageDto){
+        Page<Feed> feeds = feedRepository.search(keyword, pageDto.toPageable());
+        List<FeedResponseDto> feedResponseDtos = feeds.getContent().stream()
+                .map(FeedResponseDto::new)
+                .toList();
+        return new PageImpl<>(feedResponseDtos, pageDto.toPageable(), feeds.getTotalElements());
     }
 
     @Override

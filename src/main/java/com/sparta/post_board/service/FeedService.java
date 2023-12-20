@@ -1,8 +1,10 @@
 package com.sparta.post_board.service;
 
+import com.sparta.post_board.common.PageDto;
 import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.User;
+import org.springframework.data.domain.Page;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,9 +35,10 @@ public interface FeedService {
     /**
      * 게시글 검색
      * @param keyword 검색 키워드
+     * @param pageDto 페이지 정보
      * @return 게시글 검색 결과
      */
-    List<FeedResponseDto> searchFeed(String keyword);
+    Page<FeedResponseDto> searchFeed(String keyword, PageDto pageDto);
 
     /**
      * 게시글 수정

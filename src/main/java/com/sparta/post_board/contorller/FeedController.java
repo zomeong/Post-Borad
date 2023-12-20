@@ -1,10 +1,12 @@
 package com.sparta.post_board.contorller;
 
+import com.sparta.post_board.common.PageDto;
 import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.security.UserDetailsImpl;
 import com.sparta.post_board.service.FeedServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,8 @@ public class FeedController {
     }
 
     @GetMapping("/search")
-    public List<FeedResponseDto> searchFeed(@RequestParam String keyword){
-        return feedServiceImpl.searchFeed(keyword);
+    public Page<FeedResponseDto> searchFeed(@RequestParam String keyword, @RequestBody PageDto pageDto){
+        return feedServiceImpl.searchFeed(keyword, pageDto);
     }
 
     @GetMapping("/{feedId}")
