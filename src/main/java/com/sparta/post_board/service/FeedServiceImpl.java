@@ -68,6 +68,11 @@ public class FeedServiceImpl implements FeedService {
     @Transactional(readOnly = true)
     public Page<FeedResponseDto> searchFeed(String keyword, PageDto pageDto){
         Page<Feed> feeds = feedRepository.search(keyword, pageDto.toPageable());
+
+        if(feeds.isEmpty()){
+            throw new NotFoundException("검색 결과");
+        }
+
         List<FeedResponseDto> feedResponseDtos = feeds.getContent().stream()
                 .map(FeedResponseDto::new)
                 .toList();
