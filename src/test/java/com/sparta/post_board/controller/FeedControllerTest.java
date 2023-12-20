@@ -163,8 +163,6 @@ public class FeedControllerTest {
                 new FeedResponseDto(feed)
         );
 
-        when(feedServiceImpl.searchFeed(keyword)).thenReturn(dtoList);
-
         // when - then
         mvc.perform(get("/feeds/search")
                         .param("keyword", keyword)

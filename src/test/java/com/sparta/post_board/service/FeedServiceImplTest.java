@@ -1,5 +1,6 @@
 package com.sparta.post_board.service;
 
+import com.sparta.post_board.common.PageDto;
 import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
@@ -120,17 +123,21 @@ public class FeedServiceImplTest {
      @DisplayName("피드 검색 성공")
      void searchFeedTest1(){
          // given
-         String keyword = "제목";
+         String keyword = "제";
          Feed feed1 =  new Feed(dto, user);
-         when(feedRepository.findByTitleOrderByCreatedAtDesc(keyword)).thenReturn(List.of(feed, feed1));
+         Feed feed2 =  new Feed(dto, user);
+         PageDto pageDto = new PageDto(1, 10, "createAt");
+
+         when(feedRepository.search(keyword, pageDto.toPageable())).thenReturn(
+                 new PageImpl<>(List.of(feed1, feed2), pageDto.toPageable(), 1));
 
          // when
-         List<FeedResponseDto> responseList = feedServiceImpl.searchFeed(keyword);
+         Page<FeedResponseDto> responseList = feedServiceImpl.searchFeed(keyword, pageDto);
 
          // then
          assertThat(responseList).hasSize(2);
-         assertEquals("제목", responseList.get(0).getTitle());
-         assertEquals("제목", responseList.get(1).getTitle());
+         assertEquals("제목", responseList.getContent().get(0).getTitle());
+         assertEquals("제목", responseList.getContent().get(1).getTitle());
       }
 
     @Test
@@ -138,11 +145,14 @@ public class FeedServiceImplTest {
     void searchFeedTest2(){
         // given
         String keyword = "제목";
-        when(feedRepository.findByTitleOrderByCreatedAtDesc(keyword)).thenReturn(Collections.emptyList());
+        PageDto pageDto = new PageDto(1, 10, "createAt");
+
+        when(feedRepository.search(keyword, pageDto.toPageable())).thenReturn(
+                new PageImpl<>(Collections.emptyList(), pageDto.toPageable(), 1));
 
         // when
         Exception e = assertThrows(NotFoundException.class, () -> {
-            feedServiceImpl.searchFeed(keyword);
+            feedServiceImpl.searchFeed(keyword, pageDto);
         });
 
         // then

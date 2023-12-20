@@ -1,6 +1,7 @@
 package com.sparta.post_board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.post_board.common.PageDto;
 import com.sparta.post_board.controller.MockSpringSecurityFilter;
 import com.sparta.post_board.dto.*;
 import com.sparta.post_board.entity.Feed;
@@ -17,6 +18,8 @@ import com.sparta.post_board.service.UserServiceImpl;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,12 +28,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -188,15 +193,16 @@ class PostBoardApplicationTests {
     @DisplayName("피드 검색 성공")
     void searchFeedTest1(){
         // given
-        String keyword = "제목";
+        String keyword = "제";
+        PageDto pageDto = new PageDto(1, 10, "createAt");
 
         // when
-        List<FeedResponseDto> responseList = feedServiceImpl.searchFeed(keyword);
+        Page<FeedResponseDto> responseList = feedServiceImpl.searchFeed(keyword, pageDto);
 
         // then
         assertThat(responseList).hasSize(2);
-        assertEquals("제목", responseList.get(0).getTitle());
-        assertEquals("제목", responseList.get(1).getTitle());
+        assertEquals("제목", responseList.getContent().get(0).getTitle());
+        assertEquals("제목", responseList.getContent().get(1).getTitle());
     }
 
     @Test
@@ -204,10 +210,11 @@ class PostBoardApplicationTests {
     void searchFeedTest2(){
         // given
         String keyword = "존재하지 않는 제목";
+        PageDto pageDto = new PageDto(1, 10, "createAt");
 
         // when
         Exception e = assertThrows(NotFoundException.class, () -> {
-            feedServiceImpl.searchFeed(keyword);
+            feedServiceImpl.searchFeed(keyword, pageDto);
         });
 
         // then

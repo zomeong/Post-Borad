@@ -54,21 +54,4 @@ public class FeedRepositoryTest {
         // then
         assertThat(feedList).containsExactly(feed2, feed1);
     }
-
-    @Test
-    @DisplayName("제목으로 피드를 찾아 최신순 조회")
-    void findByTitleTest(){
-        // given
-        FeedRequestDto requestDto = new FeedRequestDto("제목", "내용");
-        Feed feed1 = new Feed(requestDto, user);
-        Feed feed2 = new Feed(requestDto, user);
-        Feed feed3 = new Feed(requestDto, user);
-        feedRepository.saveAll(List.of(feed1, feed2, feed3));
-
-        // when
-        List<Feed> feedList = feedRepository.findByTitleOrderByCreatedAtDesc("제목");
-
-        // then
-        assertThat(feedList).containsExactly(feed3, feed2, feed1);
-    }
 }
