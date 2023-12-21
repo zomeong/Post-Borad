@@ -1,4 +1,4 @@
-package com.sparta.post_board;
+package com.sparta.post_board.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

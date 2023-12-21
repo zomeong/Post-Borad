@@ -1,6 +1,6 @@
 package com.sparta.post_board.repository;
 
-import com.sparta.post_board.JpaConfig;
+import com.sparta.post_board.config.JpaConfig;
 import com.sparta.post_board.dto.CommentRequestDto;
 import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.entity.Comment;

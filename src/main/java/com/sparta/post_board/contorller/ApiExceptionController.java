@@ -1,6 +1,6 @@
 package com.sparta.post_board.contorller;
 
-import com.sparta.post_board.ErrorResult;
+import com.sparta.post_board.common.ErrorResult;
 import com.sparta.post_board.exception.DuplicateUserException;
 import com.sparta.post_board.exception.NotFoundException;
 import com.sparta.post_board.exception.OnlyAuthorAccessException;
