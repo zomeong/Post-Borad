@@ -5,6 +5,7 @@ import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.User;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,9 +15,10 @@ public interface FeedService {
      * 게시글 생성
      * @param requestDto 게시글 생성 요청정보
      * @param user 게시글 생성 요청자
+     * @param image 게시글에 첨부할 이미지
      * @return 게시글 생성 결과
      */
-    FeedResponseDto createFeed(FeedRequestDto requestDto, User user);
+    FeedResponseDto createFeed(FeedRequestDto requestDto, User user, MultipartFile image);
 
     /**
      * 모든 게시글 조회

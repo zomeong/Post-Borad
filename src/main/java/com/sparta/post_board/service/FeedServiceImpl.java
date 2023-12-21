@@ -1,6 +1,7 @@
 package com.sparta.post_board.service;
 
 import com.sparta.post_board.common.PageDto;
+import com.sparta.post_board.common.S3Uploader;
 import com.sparta.post_board.dto.FeedRequestDto;
 import com.sparta.post_board.dto.FeedResponseDto;
 import com.sparta.post_board.entity.Feed;
@@ -14,11 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +26,17 @@ public class FeedServiceImpl implements FeedService {
 
     private final FeedRepository feedRepository;
     private final UserRepository userRepository;
+    private final S3Uploader s3Uploader;
 
     @Override
-    public FeedResponseDto createFeed(FeedRequestDto requestDto, User user) {
+    public FeedResponseDto createFeed(FeedRequestDto requestDto, User user, MultipartFile image) {
         Feed feed = feedRepository.save(new Feed(requestDto, user));
+
+        if(image != null){
+            String imageUrl = s3Uploader.uploadImage(feed.getId(), image);
+            feed.setImageUrl(imageUrl);
+        }
+
         return new FeedResponseDto(feed);
     }
 

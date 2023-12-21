@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,8 +23,10 @@ public class FeedController {
     private final FeedServiceImpl feedServiceImpl;
 
     @PostMapping
-    public FeedResponseDto createFeed(@RequestBody FeedRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return feedServiceImpl.createFeed(requestDto, userDetails.getUser());
+    public FeedResponseDto createFeed(@RequestPart(value = "post") FeedRequestDto requestDto,
+                                      @RequestPart(value = "image") MultipartFile image,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return feedServiceImpl.createFeed(requestDto, userDetails.getUser(), image);
     }
 
     @GetMapping

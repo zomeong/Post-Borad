@@ -61,7 +61,7 @@ public class FeedServiceImplTest {
         when(feedRepository.save(any(Feed.class))).thenReturn(feed);
 
         // when
-        FeedResponseDto responseDto = feedServiceImpl.createFeed(dto, user);
+        FeedResponseDto responseDto = feedServiceImpl.createFeed(dto, user, null);
 
         // then
         assertEquals("제목", responseDto.getTitle());

@@ -138,7 +138,7 @@ class PostBoardApplicationTests {
         FeedRequestDto requestDto = new FeedRequestDto("제목", "내용");
 
         // when
-        FeedResponseDto responseDto = feedServiceImpl.createFeed(requestDto, user);
+        FeedResponseDto responseDto = feedServiceImpl.createFeed(requestDto, user, null);
 
         // then
         assertEquals("제목", responseDto.getTitle());

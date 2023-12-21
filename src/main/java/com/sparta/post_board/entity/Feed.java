@@ -32,6 +32,8 @@ public class Feed extends Timestamped {
     @ColumnDefault("false")
     private boolean blind;
 
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
