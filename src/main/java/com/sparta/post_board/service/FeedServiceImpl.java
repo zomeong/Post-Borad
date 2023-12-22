@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
@@ -29,10 +30,12 @@ public class FeedServiceImpl implements FeedService {
     private final S3Uploader s3Uploader;
 
     @Override
+    @Transactional
     public FeedResponseDto createFeed(FeedRequestDto requestDto, User user, MultipartFile image) {
         Feed feed = feedRepository.save(new Feed(requestDto, user));
+        String fileExtension = StringUtils.getFilenameExtension(image.getOriginalFilename());
 
-        if(image != null){
+        if(fileExtension != null){
             String imageUrl = s3Uploader.uploadImage(feed.getId(), image);
             feed.setImageUrl(imageUrl);
         }
