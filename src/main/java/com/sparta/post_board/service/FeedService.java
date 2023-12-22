@@ -46,10 +46,11 @@ public interface FeedService {
      * 게시글 수정
      * @param id 게시글 id
      * @param requestDto 게시글 수정 요청 정보
+     * @param image 게시글에 첨부할 이미지
      * @param user 게시글 수정 요청자
      * @return 게시글 수정 결과
      */
-    FeedResponseDto updateFeed(Long id, FeedRequestDto requestDto, User user);
+    FeedResponseDto updateFeed(Long id, FeedRequestDto requestDto, MultipartFile image, User user);
 
     /**
      * 게시글 완료

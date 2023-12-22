@@ -23,7 +23,7 @@ public class FeedController {
     private final FeedServiceImpl feedServiceImpl;
 
     @PostMapping
-    public FeedResponseDto createFeed(@RequestPart(value = "post") FeedRequestDto requestDto,
+    public FeedResponseDto createFeed(@RequestPart(value = "feed") FeedRequestDto requestDto,
                                       @RequestPart(value = "image") MultipartFile image,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return feedServiceImpl.createFeed(requestDto, userDetails.getUser(), image);
@@ -45,9 +45,11 @@ public class FeedController {
     }
 
     @PutMapping("/{feedId}")
-    public FeedResponseDto updateFeed(@PathVariable Long feedId, @RequestBody FeedRequestDto requestDto,
+    public FeedResponseDto updateFeed(@PathVariable Long feedId,
+                                      @RequestPart(value = "feed")  FeedRequestDto requestDto,
+                                      @RequestPart(value = "image") MultipartFile image,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return feedServiceImpl.updateFeed(feedId, requestDto, userDetails.getUser());
+        return feedServiceImpl.updateFeed(feedId, requestDto, image, userDetails.getUser());
     }
 
     @PutMapping("/{id}/complete")

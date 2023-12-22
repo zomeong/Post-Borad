@@ -67,10 +67,18 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional
-    public FeedResponseDto updateFeed(Long id, FeedRequestDto requestDto, User user) {
+    public FeedResponseDto updateFeed(Long id, FeedRequestDto requestDto, MultipartFile image, User user) {
         Feed feed = findFeed(id);
         checkUser(feed, user);
         feed.update(requestDto);
+
+        String fileExtension = StringUtils.getFilenameExtension(image.getOriginalFilename());
+        if(fileExtension != null){
+            s3Uploader.deleteImage(image.getName());
+            String imageUrl = s3Uploader.uploadImage(feed.getId(), image);
+            feed.setImageUrl(imageUrl);
+        }
+
         return new FeedResponseDto(feed);
     }
 
