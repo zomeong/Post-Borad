@@ -10,7 +10,6 @@ import com.sparta.post_board.exception.OnlyAuthorAccessException;
 import com.sparta.post_board.repository.CommentRepository;
 import com.sparta.post_board.repository.FeedRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +21,7 @@ public class CommentServiceImpl implements CommentService {
     private final FeedRepository feedRepository;
 
     @Override
+    @Transactional
     public CommentResponseDto createComment(Long id, CommentRequestDto requestDto, User user) {
         Feed feed = feedRepository.findById(id).orElseThrow(()
                 -> new NotFoundException("피드")
@@ -40,6 +40,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long feedId, Long commentId, User user) {
         Comment comment = findComment(commentId, feedId);
         checkUser(comment, user);
